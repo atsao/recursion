@@ -5,31 +5,22 @@
 
 // But instead we're going to implement it from scratch:
 var getElementsByClassName = function(className){
-  
-
   var results = [];
 
   var checkChildNodes = function (element) {
-    
-    console.log(element.className===className);
-    console.log(element);
 
-    if (element.className === className) {
-      results.push(element);
+    for (var i = 0; element.classList && i < element.classList.length; i++) {
+      if (element.classList[i] === className) {
+        results.push(element);
+      }
     }
 
-    console.log(results);
-
     for (var i = 0; i < element.childNodes.length; i++) {
-        checkChildNodes(element.childNodes[i]);
-      }
-  }
+      checkChildNodes(element.childNodes[i]);
+    }
+  };
 
   checkChildNodes(document.body);
-  // console.log(results);
-
 
   return results;
 };
-console.log('Expected result: ', document.getElementsByClassName('targetClassName'));
-console.log('Our result: ', getElementsByClassName('targetClassName'));
