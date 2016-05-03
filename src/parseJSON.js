@@ -9,8 +9,36 @@ var parseJSON = function(json) {
   console.log('Original json: ', json);
 
   if (json[0] === '[') {
-    console.log(json);
-    return [];
+    // if the array is empty, return an empty array
+    if (json.length === 2) {
+      return [];
+    }
+    
+    // remove the brackets
+    var strArrNoBrackets = json.replace(/(\[|\])/g, '');
+    // return a new array pushing in each item without the opening and closing quotation marks
+    return _.map(strArrNoBrackets.split(', '), function(element){
+      return element.slice(1, element.length - 1);
+    });
+
+    // Slice version attempt:
+    // return result;
+    // var arrayStart = json.indexOf('[');
+    // var arrayEnd = json.indexOf(',');
+    // if (arrayEnd === -1) {
+    //   arrayEnd = json.length - 1;
+    // }
+    // while (arrayStart < json.length - 1) {
+    //   var element = json.slice(arrayStart + 1, arrayEnd);
+    //   result.push(element);
+
+    //   arrayStart = arrayEnd;
+    //   arrayEnd = json.indexOf(',');
+    //   if (arrayEnd === -1) {
+    //     arrayEnd = json.length - 1;
+    //   }
+    // }
+
   }
 
   if (json[0] === '{') {
@@ -23,10 +51,10 @@ var parseJSON = function(json) {
         endIndex = json.length - 1;
       }
 
-    console.log(json);
-    console.log('Start index init:', startIndex);
-    console.log('Colon index init:', colonIndex);
-    console.log('End index init:', endIndex);
+    // console.log(json);
+    // console.log('Start index init:', startIndex);
+    // console.log('Colon index init:', colonIndex);
+    // console.log('End index init:', endIndex);
     
     while(true) {
       if (colonIndex > 0) {
@@ -35,21 +63,21 @@ var parseJSON = function(json) {
         result[key] = value;
       }
       startIndex = endIndex;
-      console.log('Start index:', startIndex);
+      // console.log('Start index:', startIndex);
 
       colonIndex = json.indexOf(':', startIndex);
-      console.log('Colon index:', colonIndex);
+      // console.log('Colon index:', colonIndex);
       if (colonIndex === -1) {
         break;
       }
       endIndex = json.indexOf(',', startIndex + 1);
-      console.log('End index:', endIndex);
+      // console.log('End index:', endIndex);
       if (endIndex === -1) {
         endIndex = json.length - 1;
       }
     }
     
-    console.log(result);
+    // console.log(result);
     return result;
   }
 
