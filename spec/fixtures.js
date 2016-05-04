@@ -37,17 +37,18 @@ unstringifiableValues = [
 
 parseableStrings = [
   // basic stuff
-  // 'true',
-  // 'false',
-  // '9',
+  'true',
+  'false',
+  '9',
+  'null',
   '[]',
   '{"foo": ""}',
   '{}',
   '{"foo": "bar"}',
   '["one", "two"]',
   '{"a": "b", "c": "d"}',
-  '[null,false,true]',
   '{"foo": true, "bar": false, "baz": null}',
+  '[null,false,true]',
   '[1, 0, -1, -0.3, 0.3, 1343.32, 3345, 0.00011999999999999999]',
   '{"boolean, true": true, "boolean, false": false, "null": null }',
 
