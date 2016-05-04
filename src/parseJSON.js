@@ -9,9 +9,9 @@ var parseJSON = function(json) {
   // Strings - no case needed
 
   // Numbers
-  if (!!parseInt(json)) {
+  if (!!Number(json)) {
     console.log('number');
-    return parseInt(json);
+    return Number(json);
   }
   
   // Boolean
@@ -42,18 +42,28 @@ var parseJSON = function(json) {
     }
     
     // remove the brackets
-    var strArrNoBrackets = json.replace(/(\[|\])/g, '');
+    // var strArrNoBrackets = json.replace(/(\[|\])/g, '');
+    var strArrNoBrackets = json.slice(1, json.length - 1);
+
     // return a new array pushing in each item without the opening and closing quotation marks
+    console.log(strArrNoBrackets);
+
     var splitArr;
     if (strArrNoBrackets.indexOf(', ') !== -1) {
       splitArr = strArrNoBrackets.split(', ');
     } else {
       splitArr = strArrNoBrackets.split(',');
     }
+    console.log(splitArr);
+    console.log('legit parse: ', JSON.parse(json));
     return _.map(splitArr, function(element){
       if (element[0] === '"') {
-        return element.slice(1, element.length - 1);
+        console.log('Element: ', element);
+        console.log('Element sliced: ', element.slice(1, element.length - 1));
+        return parseJSON(element.slice(1, element.length - 1));
       } else {
+        console.log('Element: ', element);
+        console.log('Element sliced: ', element.slice(0, element.length));
         return parseJSON(element.slice(0, element.length));
       }
     });
@@ -86,46 +96,62 @@ var parseJSON = function(json) {
     var result = {};
     var startIndex = -1; // will be index of where comma is located
     var colonIndex = json.indexOf(':');
-    var endIndex = json.indexOf(',', startIndex + 1); // will be index of next comma and eventually json.length - 2
+    var endIndex = json.indexOf(',', colonIndex + 1); // will be index of next comma and eventually json.length - 2
 
     if (endIndex === -1) {
         endIndex = json.length - 1;
       }
 
     // console.log(json);
-    // console.log('Start index init:', startIndex);
-    // console.log('Colon index init:', colonIndex);
-    // console.log('End index init:', endIndex);
+    console.log('Start index init:', startIndex);
+    console.log('Colon index init:', colonIndex);
+    console.log('End index init:', endIndex);
     
     while(true) {
       if (colonIndex > 0) {
         var key = json.slice(startIndex + 3, colonIndex - 1);
         var value;
-        if (json[colonIndex + 2] === '"') {
-          value = json.slice(colonIndex + 3, endIndex - 1);
+        if (json[colonIndex + 1] === ' ') {
+          if (json[colonIndex + 2] === '"') {
+            value = json.slice(colonIndex + 3, endIndex - 1);
+          } else if (json[colonIndex + 2] === '[') {
+            endIndex = json.indexOf(']');
+            value = json.slice(colonIndex + 2, endIndex + 1);
+          } else {
+            value = json.slice(colonIndex + 2, endIndex);
+          }
         } else {
-          value = json.slice(colonIndex + 2, endIndex);
+          if (json[colonIndex + 1] === '"') {
+            value = json.slice(colonIndex + 2, endIndex - 1);
+          } else if (json[colonIndex + 1] === '[') {
+            endIndex = json.indexOf(']');
+            value = json.slice(colonIndex + 1, endIndex + 1);
+          } else {
+            value = json.slice(colonIndex + 1, endIndex);
+          }
         }
-        // console.log('Value:', value);
-        // console.log('Recursing: ', parseJSON(value));
+        value = value.trim();
+        console.log('Value:', value, '.');
+        console.log('Recursing: ', parseJSON(value));
         result[key] = parseJSON(value);
       }
       startIndex = endIndex;
-      // console.log('Start index:', startIndex);
+      console.log('Start index:', startIndex);
 
       colonIndex = json.indexOf(':', startIndex);
-      // console.log('Colon index:', colonIndex);
+      console.log('Colon index:', colonIndex);
       if (colonIndex === -1) {
         break;
       }
-      endIndex = json.indexOf(',', startIndex + 1);
-      // console.log('End index:', endIndex);
+      endIndex = json.indexOf(',', colonIndex + 1);
       if (endIndex === -1) {
         endIndex = json.length - 1;
       }
+      console.log('End index:', endIndex);
     }
     
-    // console.log('Object final result: ', result);
+    console.log('Object final result: ', result);
+    console.log('Legit parse: ', JSON.parse(json));
     return result;
   }
 
